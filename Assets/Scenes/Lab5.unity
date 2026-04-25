@@ -703,7 +703,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ARImageTracker
   imageManager: {fileID: 738350118}
-  imagePrefabs: []
+  imagePrefabs:
+  - imageName: meta_logo
+    prefab: {fileID: 1317959578973644120, guid: 28e89125c51625e40bbd992839df717c, type: 3}
+  - imageName: unity_logo
+    prefab: {fileID: 8224701040129728394, guid: ae45574238f35874fb9611a7eb938599, type: 3}
 --- !u!1 &1728892283
 GameObject:
   m_ObjectHideFlags: 0

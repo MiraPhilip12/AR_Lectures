@@ -34,44 +34,44 @@ public class ARImageTracker : MonoBehaviour
     }
     private void OnTrackedImagesChanged(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
     {
-        foreach (var trackedImage in eventArgs.added)
+        foreach (var trackedImage in eventArgs.added) HandleImageAdded(trackedImage);
+        foreach (var trackedImage in eventArgs.updated) HandleImageUpdated(trackedImage);
+        foreach (var pair in eventArgs.removed) HandleImageRemoved(pair.Value);
+    }
+    private void HandleImageAdded(ARTrackedImage trackedImage)
+    {
+        string imageName = trackedImage.referenceImage.name;
+        if (_prefabLookup.TryGetValue(imageName, out GameObject prefab))
         {
-            string imageName = trackedImage.referenceImage.name;
-            if (_prefabLookup.TryGetValue(imageName, out GameObject prefab))
-            {
-                GameObject spawnedContent = Instantiate(
-                prefab,
-                trackedImage.transform.position,
-                trackedImage.transform.rotation
-                );
-                spawnedContent.transform.SetParent(trackedImage.transform);
-            }
+            GameObject spawnedContent = Instantiate(
+            prefab,
+            trackedImage.transform.position,
+            trackedImage.transform.rotation);
+            spawnedContent.transform.SetParent(trackedImage.transform);
         }
-        foreach (var trackedImage in eventArgs.updated)
+    }
+    private void HandleImageUpdated(ARTrackedImage trackedImage)
+    {
+        if (trackedImage.transform.childCount == 0) return;
+        GameObject content = trackedImage.transform.GetChild(0).gameObject;
+        Renderer rend = content.GetComponent<Renderer>();
+        switch (trackedImage.trackingState)
         {
-            if (trackedImage.transform.childCount > 0)
-            {
-                GameObject content = trackedImage.transform.GetChild(0).gameObject;
-                Renderer rend = content.GetComponent<Renderer>();
-                switch (trackedImage.trackingState)
-                {
-                    case TrackingState.Tracking:
-                        content.SetActive(true);
-                        if (rend != null) rend.material.color = Color.green;
-                        break;
-                    case TrackingState.Limited:
-                        content.SetActive(true);
-                        if (rend != null) rend.material.color = Color.yellow;
-                        break;
-                    case TrackingState.None:
-                        content.SetActive(false);
-                        break;
-                }
-            }
+            case TrackingState.Tracking:
+                content.SetActive(true);
+                if (rend != null) rend.material.color = Color.green;
+                break;
+            case TrackingState.Limited:
+                content.SetActive(true);
+                if (rend != null) rend.material.color = Color.yellow;
+                break;
+            case TrackingState.None:
+                content.SetActive(false);
+                break;
         }
-        foreach (var pair in eventArgs.removed)
-        {
-            Debug.Log("Image removed: " + pair.Value.referenceImage.name);
-        }
+    }
+    private void HandleImageRemoved(ARTrackedImage trackedImage)
+    {
+        Debug.Log("Image removed: " + trackedImage.referenceImage.name);
     }
 }
