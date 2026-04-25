@@ -21,9 +21,19 @@ MonoBehaviour:
       m_GuidLow: 4922138381280463224
       m_GuidHigh: 15693279766438968992
     m_SerializedTextureGuid:
-      m_GuidLow: 0
-      m_GuidHigh: 0
-    m_Size: {x: 0, y: 0}
+      m_GuidLow: 12593414677694960471
+      m_GuidHigh: 16343106493435570905
+    m_Size: {x: 0.21, y: 0.117599994}
+    m_SpecifySize: 1
+    m_Name: meta_logo
+    m_Texture: {fileID: 0}
+  - m_SerializedGuid:
+      m_GuidLow: 4853743636668977836
+      m_GuidHigh: 6209978789580248246
+    m_SerializedTextureGuid:
+      m_GuidLow: 86713903825623674
+      m_GuidHigh: 14507733634023916651
+    m_Size: {x: 0.21, y: 0.117599994}
     m_SpecifySize: 0
-    m_Name: 
+    m_Name: unity_logo
     m_Texture: {fileID: 0}
