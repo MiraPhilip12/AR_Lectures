@@ -703,7 +703,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ARImageTracker
   imageManager: {fileID: 738350118}
-  contentPrefab: {fileID: 1317959578973644120, guid: 28e89125c51625e40bbd992839df717c, type: 3}
+  imagePrefabs: []
 --- !u!1 &1728892283
 GameObject:
   m_ObjectHideFlags: 0

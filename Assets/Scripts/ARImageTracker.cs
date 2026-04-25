@@ -1,10 +1,28 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+[Serializable]
+public class ImagePrefabEntry
+{
+    public string imageName;
+    public GameObject prefab;
+}
 public class ARImageTracker : MonoBehaviour
 {
     [SerializeField] private ARTrackedImageManager imageManager;
-    [SerializeField] private GameObject contentPrefab;
+    [SerializeField] private List<ImagePrefabEntry> imagePrefabs;
+    private Dictionary<string, GameObject> _prefabLookup = new Dictionary<string, GameObject>();
+    private void Awake() {
+        foreach (var entry in imagePrefabs)
+        {
+            if (!_prefabLookup.ContainsKey(entry.imageName))
+            {
+                _prefabLookup[entry.imageName] = entry.prefab;
+            }
+        }
+    }
     private void OnEnable()
     {
         imageManager.trackablesChanged.AddListener(OnTrackedImagesChanged);
@@ -15,16 +33,20 @@ public class ARImageTracker : MonoBehaviour
     }
     private void OnTrackedImagesChanged(ARTrackablesChangedEventArgs<ARTrackedImage> eventArgs)
     {
-        //Added Trackables
         foreach (var trackedImage in eventArgs.added)
         {
-            GameObject spawnedContent = Instantiate(
-            contentPrefab,
-            trackedImage.transform.position,
-            trackedImage.transform.rotation);
-            spawnedContent.transform.SetParent(trackedImage.transform);
+            string imageName = trackedImage.referenceImage.name;
+            // Only spawn if this image name is registered in the list
+            if (_prefabLookup.TryGetValue(imageName, out GameObject prefab))
+            {
+                GameObject spawnedContent = Instantiate(
+                prefab,
+                trackedImage.transform.position,
+                trackedImage.transform.rotation
+                );
+                spawnedContent.transform.SetParent(trackedImage.transform);
+            }
         }
-        //Updated Trackables
         foreach (var trackedImage in eventArgs.updated)
         {
             if (trackedImage.transform.childCount > 0)
@@ -34,13 +56,9 @@ public class ARImageTracker : MonoBehaviour
                 content.SetActive(isTracking);
             }
         }
-        //Removed Trackables
         foreach (var pair in eventArgs.removed)
         {
-            // 'removed' is a dictionary: Key is the TrackableId, Value is the ARTrackedImage
-            ARTrackedImage removedImage = pair.Value;
-            Debug.Log("Image removed: " + removedImage.referenceImage.name);
+            Debug.Log("Image removed: " + pair.Value.referenceImage.name);
         }
     }
 }
-
